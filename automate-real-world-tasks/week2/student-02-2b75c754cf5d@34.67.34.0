@@ -1,0 +1,38 @@
+#! /usr/bin/env python3
+
+import os
+import requests
+
+feedback_path = "/data/feedback/"
+
+arqs = os.listdir(feedback_path)
+
+feedback_list = []
+
+for arq in arqs:
+	print(arq)
+
+for arq in arqs:
+	dict_feedback = {}
+	with open(feedback_path + arq, 'r') as f:
+		dict_feedback['title'] = f.readline().rstrip('\n')
+		dict_feedback['name'] = f.readline().rstrip('\n')
+		dict_feedback['date'] = f.readline().rstrip('\n')
+		dict_feedback['feedback'] = f.readline().rstrip('\n')
+
+	print(dict_feedback)
+	feedback_list.append(dict_feedback)
+
+# The API endpoint to communicate with
+url_post = "http://34.67.34.0/feedback"
+
+for feedback in feedback_list:
+	# A POST request to tthe API
+	post_response = requests.post(url_post, json=feedback)
+
+	# Print the response
+	post_response_json = post_response.json()
+	print(post_response_json)
+
+	
+
