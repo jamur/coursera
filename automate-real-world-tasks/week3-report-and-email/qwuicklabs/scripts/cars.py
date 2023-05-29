@@ -3,6 +3,9 @@
 import json
 import locale
 import sys
+import reports
+import getpass
+import emails
 
 
 def load_data(filename):
@@ -57,9 +60,9 @@ def process_data(data):
   summary = [
     "The {} generated the most revenue: ${}".format(
       format_car(max_revenue["car"]), max_revenue["revenue"]),
+    #"The {} had the most sales: {}".format(
+    #  format_car(max_sales["car"]), max_sales["total_sales"]),
     "The {} had the most sales: {}".format(
-      format_car(max_sales["car"]), max_sales["total_sales"]),
-    "Calc with max -> The {} had the most sales: {}".format(
       format_car(max_sales_with_max["car"]), max_sales_with_max["total_sales"]),
     "The most popular year was {} with {} sales.".format(
       popular_year, sales_count[popular_year]),
@@ -83,8 +86,15 @@ def main(argv):
   for s in summary:
     print(s)
   # TODO: turn this into a PDF report
+  cars_table = cars_dict_to_table(data)
+  reports.generate("/tmp/cars.pdf", "Cars Sales", "<br/>".join(summary), cars_table)
+
 
   # TODO: send the PDF report as an email attachment
+  mail_pass = getpass.getpass("Password?")
+  message = emails.generate("rjamur@gmail.com", "jamur@ufpr.br", "Cars Sales Report",
+                  "We are sending the Report of cars sales", "/tmp/cars.pdf")
+  emails.send_gmail(message, mail_pass)
 
 
 if __name__ == "__main__":

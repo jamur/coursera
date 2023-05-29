@@ -32,3 +32,12 @@ def send(message):
   mail_server = smtplib.SMTP('localhost')
   mail_server.send_message(message)
   mail_server.quit()
+
+def send_gmail(message, mail_pass):
+  """Sends the message through gmail."""
+  sender = message["From"]
+  mail_server = smtplib.SMTP('smtp.gmail.com:587')
+  mail_server.starttls()
+  mail_server.login(sender, mail_pass)
+  mail_server.send_message(message)
+  mail_server.quit()
